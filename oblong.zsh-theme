@@ -29,6 +29,13 @@ if (( ${+functions[git-info]} )); then
 
   autoload -Uz add-zsh-hook && add-zsh-hook precmd git-info
 fi
+if (( ${+functions[duration-info-preexec]} && \
+    ${+functions[duration-info-precmd]} )); then
+  zstyle ':zim:duration-info' threshold 0.5
+  zstyle ':zim:duration-info' format '%B%F{yellow}(%d)%f%b '
 
-PS1='%(?:%F{white}:%F{red})◼ ${VIRTUAL_ENV:+"(${VIRTUAL_ENV:t}) "}%(!:%F{red}:%F{white})%n%f%F:$(_prompt_basher_pwd)${(e)git_info[prompt]} %f%(!:#:$) '
+  autoload -Uz add-zsh-hook && add-zsh-hook preexec duration-info-preexec && add-zsh-hook precmd duration-info-precmd
+fi
+
+PS1='%(?:%F{white}:%F{red})◼ ${VIRTUAL_ENV:+"(${VIRTUAL_ENV:t}) "}%(!:%F{red}:%F{white})%n%f%F:$(_prompt_basher_pwd)${(e)git_info[prompt]} ${duration_info}%f%(!:#:$) '
 RPS1='%(?::%F{red}$?)'
